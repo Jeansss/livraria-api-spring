@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.persistence.EntityNotFoundException;
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +15,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import br.com.alura.livraria.dto.AutorAtualizacaoFormDto;
+import br.com.alura.livraria.dto.AutorDetalhadoDto;
 import br.com.alura.livraria.dto.AutorDto;
 import br.com.alura.livraria.dto.AutorFormDto;
 import br.com.alura.livraria.modelo.Autor;
@@ -41,6 +45,26 @@ public class AutorService {
 		autorRepository.save(autor);
 
 		return modelMapper.map(autor, AutorDto.class);
+	}
+	
+	@Transactional
+	public AutorDto atualizar(@Valid AutorAtualizacaoFormDto dto) {
+		Autor autor = autorRepository.getById(dto.getId());
+
+		autor.atualizarInformacoes(dto.getNome(), dto.getEmail(), dto.getData());
+		
+		return modelMapper.map(autor, AutorDto.class);
+	}
+	
+	@Transactional
+	public void remover(@NotNull Long id) {
+		autorRepository.deleteById(id);
+	}
+	
+	public AutorDetalhadoDto detalhar(@NotNull Long id) {
+		Autor autor = autorRepository.findById(id).orElseThrow(() -> new EntityNotFoundException());
+		return modelMapper.map(autor, AutorDetalhadoDto.class);
+		
 	}
 
 }

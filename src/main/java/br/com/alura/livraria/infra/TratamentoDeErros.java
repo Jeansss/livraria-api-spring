@@ -1,5 +1,52 @@
 package br.com.alura.livraria.infra;
 
-public class TratamentoDeErros {
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
+import javax.persistence.EntityNotFoundException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import br.com.alura.livraria.dto.Error400Dto;
+import br.com.alura.livraria.dto.Error500Dto;
+
+@RestControllerAdvice
+public class TratamentoDeErros {
+	
+	@ExceptionHandler(MethodArgumentNotValidException.class) //diz para o spring que esse método é para tratar // Quando acontece erro do bean validation, o spring lança uma exception chamada , MethodArgumentNotValid
+	@ResponseStatus(code = HttpStatus.BAD_REQUEST) // para dizer ao spring para retornar o status code de bad request quue é 400
+	public List<Error400Dto> tratarErro404(MethodArgumentNotValidException ex) {
+				return ex
+				.getFieldErrors()
+				.stream()
+				.map(erro -> new Error400Dto(erro.getField(), erro.getDefaultMessage()))
+				.collect(Collectors.toList());
+
+	}
+	
+	@ExceptionHandler(Exception.class)
+	@ResponseStatus(code = HttpStatus.INTERNAL_SERVER_ERROR)
+	public Error500Dto tratarErro500(Exception ex, HttpServletRequest req) {
+		return new Error500Dto(
+				LocalDateTime.now(),
+				ex.getClass().toString(),
+				ex.getMessage(),
+				req.getRequestURI());
+	}
+	
+	
+	@ExceptionHandler({EntityNotFoundException.class, EmptyResultDataAccessException.class})
+	@ResponseStatus(code = HttpStatus.NOT_FOUND)
+	public void tratarErro404() {
+		
+	}
+	
 }

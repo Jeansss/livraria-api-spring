@@ -36,5 +36,18 @@ public class Livro {
 
 	@ManyToOne
 	private Autor autor;
+	
+	public Livro(String titulo, LocalDate data, Integer paginas, Autor autor) {
+		this.titulo = titulo;
+		this.dataDeLancamento = data;
+		this.paginas = paginas;
+		this.autor = autor;
+	}
+	
+	public void atualizarInformacoes(String titulo, Integer paginas, LocalDate data) {
+		this.titulo = titulo;
+		this.paginas = paginas;
+		this.dataDeLancamento = data;
+	}
 
 }

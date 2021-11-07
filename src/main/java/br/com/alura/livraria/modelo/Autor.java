@@ -1,5 +1,6 @@
 package br.com.alura.livraria.modelo;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 import javax.persistence.Entity;
@@ -28,6 +29,20 @@ public class Autor {
 	 private String nome;
 	 private String email;
 	 private LocalDate data;
+	 
+	 public Autor(String nome, String email, LocalDate data) {
+		 this.nome = nome;
+		 this.email = email;
+		 this.data = data;
+	 }
+	 
+	public void atualizarInformacoes(String nome, String email, LocalDate data) {
+		
+		this.nome = nome;
+		this.email = email;
+		this.data = data;
+		
+	}
 	
 	
 
