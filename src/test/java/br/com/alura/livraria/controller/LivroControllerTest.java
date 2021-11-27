@@ -7,6 +7,7 @@ import java.util.List;
 
 import javax.transaction.Transactional;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -17,6 +18,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
@@ -26,8 +29,11 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import br.com.alura.livraria.dto.AutorDto;
 import br.com.alura.livraria.dto.AutorFormDto;
+import br.com.alura.livraria.infra.security.TokenService;
 import br.com.alura.livraria.modelo.Autor;
+import br.com.alura.livraria.modelo.Usuario;
 import br.com.alura.livraria.repository.AutorRepository;
+import br.com.alura.livraria.repository.UsuarioRepository;
 import br.com.alura.livraria.service.AutorService;
 
 @ExtendWith(SpringExtension.class)
@@ -43,7 +49,26 @@ class LivroControllerTest {
 	@Autowired
 	private AutorRepository	autorRepository;
 	
-	private ModelMapper modelMapper = new ModelMapper();
+	@Autowired
+	private ModelMapper modelMapper;
+	
+	@Autowired
+	private TokenService tokenService;
+	
+	@Autowired
+	private UsuarioRepository usuarioRepository;
+	
+	private String token;
+	
+	@BeforeEach
+	public void gerarToken() {
+		Usuario logado = new Usuario("Rodrigo", "rodrigo", "123456");
+	
+		usuarioRepository.save(logado);
+				
+		Authentication authentication = new UsernamePasswordAuthenticationToken(logado, logado.getLogin());
+		this.token = tokenService.gerarToken(authentication);
+	}
 	
 	
 	@Test
@@ -52,7 +77,8 @@ class LivroControllerTest {
 		mvc.perform(MockMvcRequestBuilders
 				.post("/livros")
 				.contentType(MediaType.APPLICATION_JSON)
-				.content(json))
+				.content(json)
+				.header("Authorization", "Bearer " + token))
 				.andExpect(MockMvcResultMatchers.status().isBadRequest());
 	}
 	
@@ -71,7 +97,8 @@ class LivroControllerTest {
 		mvc.perform(MockMvcRequestBuilders
 				.post("/livros")
 				.contentType(MediaType.APPLICATION_JSON)
-				.content(json))
+				.content(json)
+				.header("Authorization", "Bearer " + token))
 				.andExpect(MockMvcResultMatchers.status().isCreated())
 				.andExpect(MockMvcResultMatchers.header().exists("Location"))
 				.andExpect(MockMvcResultMatchers.content().json(jsonRetorno));

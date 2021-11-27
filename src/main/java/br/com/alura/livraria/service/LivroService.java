@@ -68,8 +68,6 @@ public class LivroService {
 	public LivroDtoDetalhado detalhar(@NotNull Long id) {
 		Livro livro = livroRepository.findById(id).orElseThrow(() -> new EntityNotFoundException());
 		return modelMapper.map(livro, LivroDtoDetalhado.class);
-		
-		
 	}
 
 }
