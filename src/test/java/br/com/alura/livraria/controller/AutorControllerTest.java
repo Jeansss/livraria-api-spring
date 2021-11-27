@@ -24,6 +24,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import br.com.alura.livraria.dto.AutorFormDto;
 import br.com.alura.livraria.infra.security.TokenService;
 import br.com.alura.livraria.modelo.Autor;
+import br.com.alura.livraria.modelo.Perfil;
 import br.com.alura.livraria.modelo.Usuario;
 import br.com.alura.livraria.repository.AutorRepository;
 import br.com.alura.livraria.repository.UsuarioRepository;
@@ -52,6 +53,9 @@ class AutorControllerTest {
 	@BeforeEach
 	public void gerarToken() {
 		Usuario logado = new Usuario("Rodrigo", "rodrigo", "123456");
+		
+		Perfil perfil = new Perfil(1l, "ADMIN");
+		logado.adicionarPerfil(perfil);
 	
 		usuarioRepository.save(logado);
 				
@@ -86,12 +90,12 @@ class AutorControllerTest {
 	
 	@Test
 	void deveriaListarAutores() throws Exception {
-		Autor a1 = new Autor("jean", "jean@test.com", LocalDate.now());
+		Autor a1 = new Autor("jean", "jean@test.com", LocalDate.of(2021, 11, 4));
 		repository.save(a1);
 		
 		Long autorId = repository.findAll().get(0).getId();
 		
-		String json = "{\"content\":[{\"id\":" + autorId + ",\"nome\":\"jean\",\"email\":\"jean@test.com\",\"data\":\"2021-11-26\"}],\"pageable\":{\"sort\":{\"sorted\":false,\"empty\":true,\"unsorted\":true},\"pageNumber\":0,\"pageSize\":10,\"offset\":0,\"paged\":true,\"unpaged\":false},\"last\":true,\"totalPages\":1,\"totalElements\":1,\"sort\":{\"sorted\":false,\"empty\":true,\"unsorted\":true},\"numberOfElements\":1,\"size\":10,\"number\":0,\"first\":true,\"empty\":false}";
+		String json = "{\"content\":[{\"id\":" + autorId + ",\"nome\":\"jean\",\"email\":\"jean@test.com\",\"data\":\"2021-11-04\"}],\"pageable\":{\"sort\":{\"sorted\":false,\"empty\":true,\"unsorted\":true},\"pageNumber\":0,\"pageSize\":10,\"offset\":0,\"paged\":true,\"unpaged\":false},\"last\":true,\"totalPages\":1,\"totalElements\":1,\"sort\":{\"sorted\":false,\"empty\":true,\"unsorted\":true},\"numberOfElements\":1,\"size\":10,\"number\":0,\"first\":true,\"empty\":false}";
 		
 		mvc.perform(MockMvcRequestBuilders
 				.get("/autores")

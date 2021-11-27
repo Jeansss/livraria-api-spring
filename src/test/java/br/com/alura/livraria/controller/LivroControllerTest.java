@@ -31,6 +31,7 @@ import br.com.alura.livraria.dto.AutorDto;
 import br.com.alura.livraria.dto.AutorFormDto;
 import br.com.alura.livraria.infra.security.TokenService;
 import br.com.alura.livraria.modelo.Autor;
+import br.com.alura.livraria.modelo.Perfil;
 import br.com.alura.livraria.modelo.Usuario;
 import br.com.alura.livraria.repository.AutorRepository;
 import br.com.alura.livraria.repository.UsuarioRepository;
@@ -63,6 +64,9 @@ class LivroControllerTest {
 	@BeforeEach
 	public void gerarToken() {
 		Usuario logado = new Usuario("Rodrigo", "rodrigo", "123456");
+		Perfil perfil = new Perfil(1l, "ADMIN");
+		
+		logado.adicionarPerfil(perfil);
 	
 		usuarioRepository.save(logado);
 				

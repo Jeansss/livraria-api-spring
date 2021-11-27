@@ -38,11 +38,11 @@ public class Usuario implements UserDetails { //necessário implementar a interf
 	private String login;
 	private String senha;
 	
-//	@ManyToMany //muitos para muitos, muitos perfis para muitos usuarios ou muitos usuarios para mtos perfis
-//	@JoinTable(name = "perfis_usuarios",
-//			joinColumns = @JoinColumn(name = "usuario_id"),
-//			inverseJoinColumns = @JoinColumn(name = "perfil_id"))// quando temos relacionamento muitos para muitos surge uma tabela intermediário, que seria uma tabela de join, que é uma nova tabela que vai passar a fazer essa nova associacao, usuario x tem o perfil y, usuario x tem o perfil 2
-//	private List<Perfil> perfis = new ArrayList<>(); //pq vai haver um relacionamento do user com a tabela de perfis agora, e um user pode ter mais de um perfil
+	@ManyToMany //muitos para muitos, muitos perfis para muitos usuarios ou muitos usuarios para mtos perfis
+	@JoinTable(name = "perfis_usuarios",
+			joinColumns = @JoinColumn(name = "usuario_id"),
+			inverseJoinColumns = @JoinColumn(name = "perfil_id"))// quando temos relacionamento muitos para muitos surge uma tabela intermediário, que seria uma tabela de join, que é uma nova tabela que vai passar a fazer essa nova associacao, usuario x tem o perfil y, usuario x tem o perfil 2
+	private List<Perfil> perfis = new ArrayList<>(); //pq vai haver um relacionamento do user com a tabela de perfis agora, e um user pode ter mais de um perfil
 	
 	public Usuario (String nome, String login, String senha) {
 		this.nome = nome;
@@ -52,7 +52,7 @@ public class Usuario implements UserDetails { //necessário implementar a interf
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
-		return null;
+		return this.perfis;
 	}
 
 	@Override
@@ -88,6 +88,11 @@ public class Usuario implements UserDetails { //necessário implementar a interf
 	public boolean isEnabled() {
 		// TODO Auto-generated method stub
 		return true;
+	}
+	
+	public void adicionarPerfil(Perfil perfil) {
+
+		this.perfis.add(perfil);
 	}
 
 }

@@ -41,7 +41,7 @@ public class VerificacaoTokenFilter extends OncePerRequestFilter {
 		boolean tokenValido = tokenService.isValid(token);
 		if (tokenValido) {
 			Long idUsuario = tokenService.extrairIdUsuario(token);
-			Usuario logado = usuarioRepository.findById(idUsuario).get();
+			Usuario logado = usuarioRepository.carregaPorIdComPerfis(idUsuario).get();
 			Authentication authentication = new UsernamePasswordAuthenticationToken(logado, null, logado.getAuthorities());	
 			SecurityContextHolder.getContext().setAuthentication(authentication);
 		}

@@ -47,6 +47,7 @@ public class SecurityConfigurations extends WebSecurityConfigurerAdapter {
 		http
 		.authorizeRequests()
 		.antMatchers(HttpMethod.POST, "/auth").permitAll()
+		.antMatchers("/usuarios/**").hasRole("ADMIN")
 		.anyRequest().authenticated() //todas requestes tem de ser autenticadas
 		.and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS) //dizendo ao spring que o gerenciamento de sessao deve ser o statless, ou seja quando alguem fizer login nao é pra guardr jsession id nem sessao do lado dos server
 		.and().csrf().disable() //agora nós teremos de criar um controller por conta dessa linha de cima q nao é mais a config padrao do spring, e antes ele controlava sozinho a request.
