@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import br.com.alura.livraria.dto.UsuarioDto;
 import br.com.alura.livraria.dto.UsuarioFormDto;
+import br.com.alura.livraria.infra.EnviadorDeEmail;
 import br.com.alura.livraria.modelo.Perfil;
 import br.com.alura.livraria.modelo.Usuario;
 import br.com.alura.livraria.repository.PerfilRepository;
@@ -37,6 +38,9 @@ public class UsuarioService {
 	@Autowired
 	private BCryptPasswordEncoder bCryptPasswordEncoder;
 	
+	@Autowired
+	private EnviadorDeEmail enviadorDeEmail;
+	
 	public List<UsuarioDto> listar() {
 		List<Usuario> usuarios = usuarioRepository.findAll();
 		return usuarios
@@ -54,6 +58,12 @@ public class UsuarioService {
 		String senha = new Random().nextInt(999999) + "";
 		usuario.setSenha(bCryptPasswordEncoder.encode(senha));
 		usuarioRepository.save(usuario);
+		
+		String destinatario = dto.getEmail();
+		String assunto = "Carteira - Bem vindo";
+		String mensagem = String.format("Olá %s!!!\n\nSegue seus dados de acesso ao sistema carteira: \nLogin:%s\nSenha:%s ", usuario.getNome(), usuario.getLogin(), senha);
+		
+		enviadorDeEmail.enviarEmail(destinatario, assunto, mensagem);
 		
 		return modelMapper.map(usuario, UsuarioDto.class);
 		
