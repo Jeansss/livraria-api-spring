@@ -61,7 +61,7 @@ public class UsuarioService {
 		
 		String destinatario = dto.getEmail();
 		String assunto = "Carteira - Bem vindo";
-		String mensagem = String.format("Olá %s!!!\n\nSegue seus dados de acesso ao sistema carteira: \nLogin:%s\nSenha:%s ", usuario.getNome(), usuario.getLogin(), senha);
+		String mensagem = String.format("Olá %s!!!\n\nSeguem seus dados de acesso ao sistema carteira: \nLogin:%s\nSenha:%s ", usuario.getNome(), usuario.getLogin(), senha);
 		
 		enviadorDeEmail.enviarEmail(destinatario, assunto, mensagem);
 		
