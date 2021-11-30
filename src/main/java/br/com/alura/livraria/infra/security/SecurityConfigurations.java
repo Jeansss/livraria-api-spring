@@ -46,7 +46,7 @@ public class SecurityConfigurations extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception { //sobrescrevendo esse método nos desabilitamos a proteção do csrf token para poder fazer requests de post,put.. mas mantém as outras configs
 		http
 		.authorizeRequests()
-		.antMatchers(HttpMethod.POST, "/auth", "/usuarios").permitAll()
+		.antMatchers(HttpMethod.POST, "/auth").permitAll()
 		.antMatchers("/usuarios/**").hasRole("ADMIN")
 		.anyRequest().authenticated() //todas requestes tem de ser autenticadas
 		.and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS) //dizendo ao spring que o gerenciamento de sessao deve ser o statless, ou seja quando alguem fizer login nao é pra guardr jsession id nem sessao do lado dos server
